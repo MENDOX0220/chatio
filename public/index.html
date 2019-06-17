@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        *{
+            outline: none;
+            border-radius: 10px;
+        }
+        body {
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow-y: hidden;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            font-size: 1em;
+        }
+        ::-webkit-scrollbar{
+            display: none;
+        }
+
+        #chatBox {
+            overflow: scroll;
+            margin-top: 3.5vh;
+            width: 97%;
+            height: 85vh;
+            border: 1px solid black;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #chatInput {
+            width: 97%;
+            height: 8vh;
+            border-bottom: 1px solid #DB83F6;
+        }
+    </style>
+    <script src="./socket.io.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="chatBox">
+
+    </div>
+    <input type="text" id="chatInput">
+    <script>
+        var socket = io()
+        var input = document.getElementById("chatInput")
+        var box = document.getElementById("chatBox")
+
+        input.addEventListener("keypress", e => {
+            if (e.keyCode == 13) {
+                socket.emit("sendServer", {
+                    msg: input.value
+                })
+                input.value = ""
+            }
+        })
+
+        socket.on("sendClient", data => {
+            var div = document.createElement("div")
+            div.innerHTML = data.msg
+            box.appendChild(div)
+            box.scrollTop = box.scrollHeight
+        })
+    </script>
+</body>
+
+</html>
