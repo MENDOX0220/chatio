@@ -5,68 +5,147 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link
+        href="https://fonts.googleapis.com/css?family=Gaegu|Gothic+A1|Hi+Melody|Jua|Nanum+Brush+Script|Nanum+Pen+Script|Poor+Story&display=swap"
+        rel="stylesheet">
     <style>
-        *{
-            outline: none;
-            border-radius: 10px;
-        }
         body {
-            width: 100vw;
-            height: 100vh;
             margin: 0;
             padding: 0;
             overflow-y: hidden;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            font-size: 1em;
         }
-        ::-webkit-scrollbar{
+
+        ::-webkit-scrollbar {
             display: none;
         }
 
-        #chatBox {
-            overflow: scroll;
-            margin-top: 3.5vh;
-            width: 97%;
-            height: 85vh;
-            border: 1px solid black;
+
+        #sideBar {
+            height: 100%;
+            width: 150px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            padding-top: 20px;
+            color: white;
+        }
+        #submit{
+            font-size: 0.5em;
+            margin: 0;
+            padding: 0;
+        }
+        .chat {
             display: flex;
+            justify-content: center;
+            align-items: center;
             flex-direction: column;
+            flex-wrap: wrap;
+        }
+
+        .chat2 {
+            margin-top: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.7em;
+        }
+
+        #main {
+            margin-left: 160px;
+            width: 83vw;
+        }
+
+        #chatBox {
+            margin-top: 5px;
+            overflow: scroll;
+            width: 83vw;
+            height: 88vh;
+            box-sizing: border-box;
+            border-radius: 10px;
+            border-left: 1px solid rgb(130, 92, 185);
+        }
+
+        #nickName {
+            width: 80px;
+            margin-bottom: 5px;
+            margin-left: 10px;
+            border-style: none;
+            outline: none;
         }
 
         #chatInput {
-            width: 97%;
-            height: 8vh;
-            border-bottom: 1px solid #DB83F6;
+            padding-left: 10px;
+            width: 80vw;
+            margin-bottom: 5px;
+            border-style: none;
+            outline: none;
+            border-radius: 9px;
+            border-bottom: 1px solid rgb(130, 92, 185);
+            border-left: 1px solid rgb(130, 92, 185);
+        }
+
+        header {
+            font-size: 13m;
+            border-radius: 10px;
+            box-sizing: border-box;
+            border-bottom: 1px solid gray;
+            padding-left: 10px;
+        }
+
+        span {
+            padding: 3px;
         }
     </style>
     <script src="./socket.io.js"></script>
-    <title>Document</title>
+    <title>Chatio</title>
 </head>
 
 <body>
-    <div id="chatBox">
-
+    <div id="sideBar">
+                <input type="text" id="nickName">
+        <p id="nickError"></p>
+        <div id="users"></div>
     </div>
-    <input type="text" id="chatInput">
+    <div id="main">
+        <header>CHAT:TING/ROOM</header>
+        <div class="chat">
+            <div id="chatBox">
+            </div>
+            <div class="chat2">
+                <input type="text" id="chatInput">
+            </div>
+        </div>
+    </div>
+
+
+
     <script>
         var socket = io()
         var input = document.getElementById("chatInput")
         var box = document.getElementById("chatBox")
+        var name = document.getElementById("nickName")
 
         input.addEventListener("keypress", e => {
             if (e.keyCode == 13) {
                 socket.emit("sendServer", {
-                    msg: input.value
+                    msg: " : " + input.value
                 })
                 input.value = ""
             }
         })
-
+        // name.addEventListener("keypress", e => {
+        //     if (e.keyCode == 13){
+        //         socket.emit
+        //     }
+        // })
         socket.on("sendClient", data => {
             var div = document.createElement("div")
-            div.innerHTML = data.msg
+            var span = document.createElement("span")
+            span.innerHTML = data.msg
+            box.appendChild(span)
             box.appendChild(div)
             box.scrollTop = box.scrollHeight
         })
